@@ -12,7 +12,10 @@ use core::{
 use axerrno::AxError;
 use kernel_guard::NoPreemptIrqSave;
 
-use crate::{AxTaskRef, WeakAxTaskRef, current, current_run_queue, select_run_queue};
+use crate::{
+    executor,
+    AxTaskRef, WeakAxTaskRef, current, current_run_queue, select_run_queue,
+};
 
 mod poll;
 pub use poll::*;
@@ -66,7 +69,12 @@ pub fn block_on<F: IntoFuture>(f: F) -> F::Output {
 
     loop {
         woke.store(false, Ordering::Release);
-        match fut.as_mut().poll(&mut cx) {
+        let result = fut.as_mut().poll(&mut cx);
+
+        // Polling the executor to run three async tasks.
+        let _ = executor::run_for(3);
+
+        match result {
             Poll::Pending => {
                 if !woke.load(Ordering::Acquire) {
                     current_run_queue::<NoPreemptIrqSave>().blocked_resched();

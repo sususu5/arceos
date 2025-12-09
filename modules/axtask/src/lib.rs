@@ -42,6 +42,7 @@ cfg_if::cfg_if! {
         #[macro_use]
         mod run_queue;
         mod task;
+        pub mod executor;
         mod api;
         mod wait_queue;
 

@@ -83,6 +83,7 @@ pub fn init_scheduler() {
     info!("Initialize scheduling...");
 
     crate::run_queue::init();
+    crate::executor::init();
 
     info!("  use {} scheduler.", Scheduler::scheduler_name());
 }

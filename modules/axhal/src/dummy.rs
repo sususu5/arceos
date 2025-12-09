@@ -125,7 +125,9 @@ impl IrqIf for DummyIrq {
         None
     }
 
-    fn handle(_irq: usize) {}
+    fn handle(_irq: usize) -> Option<usize> {
+        None
+    }
 
     fn send_ipi(_irq: usize, _target: IpiTarget) {}
 }
